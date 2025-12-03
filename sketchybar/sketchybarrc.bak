@@ -1,0 +1,167 @@
+# This is a demo config to showcase some of the most important commands.
+# It is meant to be changed and configured, as it is intentionally kept sparse.
+# For a (much) more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+source "$CONFIG_DIR/colors.sh" # Loads all defined colors
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+##### Bar Appearance ####kh 
+# Configuring the general appearance of the bar.
+# These are only some of the options available. For all options see:
+# https://felixkratz.github.io/SketchyBar/config/bar
+# If you are looking for other colors, see the color picker:
+# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+
+# sketchybar --bar  position=top height=38 blur_radius=30 color=$BACKGROUND_COLOR 
+sketchybar --bar topmost=off position=top height=38 blur_radius=30 color=0xff000000  
+
+##### Changing Defaults #####
+# We now change some default values, which are applied to all further items.
+# For a full list of all available item properties see:
+# https://felixkratz.github.io/SketchyBar/config/items
+
+default=(
+  padding_left=5
+  padding_right=5
+  icon.font="SF Pro:Bold:10.0"
+  label.font="SF Pro:Bold:10.0"
+  icon.color=$FOREGROUND_COLOR
+  label.color=$FOREGROUND_COLOR
+  icon.padding_left=6
+  label.padding_left=3
+  icon.padding_right=3
+  label.padding_right=6
+  y_offset=-5
+)
+
+background=(
+  background.color=${COLOR_3}
+  background.corner_radius=3
+  background.height=20
+)
+sketchybar --default "${default[@]}"
+
+##### Adding Mission Control Space Indicators #####
+# Let's add some mission control spaces:
+# https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
+# to indicate active and available mission control spaces.
+
+# SPACE_ICONS=("􀈂¹" "􀙄²" "􀉻³" "􂄹⁴" "􀈎⁵" "􀊃⁶" "􀤭⁷" "􀊃⁸" "􀛸⁹")
+SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9")
+
+for i in "${!SPACE_ICONS[@]}"
+do
+  sid="$(($i+1))"
+  space=(
+    space="$sid"
+    icon="${SPACE_ICONS[i]}"
+    icon.padding_left=4
+    icon.padding_right=4
+    "${background[@]}"
+    label.drawing=off
+    script="$PLUGIN_DIR/space.sh"
+    click_script="sh ~/.config/skhd/focus.sh $sid"
+    padding_left=2
+    padding_right=2
+    # ignore_association=on
+  )
+  if [ "$i" -eq 0 ]; then
+    space+=(background.padding_left=-10)
+  fi
+  sketchybar --add space space."$sid" left --set space."$sid" "${space[@]}"
+done
+
+##### Adding Left Items #####
+# We add some regular items to the left side of the bar, where
+# only the properties deviating from the current defaults need to be set
+
+sketchybar --add event event_custom_layout_changed 
+
+sketchybar --add item chevron left \
+           --set chevron icon=\| label.drawing=off \
+           --add item layout left \
+           --set layout script="$PLUGIN_DIR/layout.sh" background.padding_left=-8 background.padding_right=-8 \
+           --set layout click_script="sh /Users/minhb/.config/skhd/layout.sh" \
+           --subscribe layout event_custom_layout_changed \
+           --subscribe layout space_change \
+           --subscribe layout event_custom_windows_changed \
+           --add item chevron2 left \
+           --set chevron2 icon=\| label.drawing=off \
+           --add item front_app left \
+           --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
+           --subscribe front_app front_app_switched
+           
+
+# add custom event event_custom_windows_changed
+# add a text item to display this event, subscribe to event_custom_windows_changed, run script windows_changed.sh
+# set label to empty as first
+
+sketchybar --add event event_custom_windows_changed 
+sketchybar --add item windows_changed left \
+           --set windows_changed script="$PLUGIN_DIR/windows_changed.sh" \
+           --subscribe windows_changed event_custom_windows_changed
+
+
+
+##### Adding Right Items #####
+# In the same way as the left items we can add items to the right side.
+# Additional position (e.g. center) are available, see:
+# https://felixkratz.github.io/SketchyBar/config/items#adding-items-to-sketchybar
+
+# Some items refresh on a fixed cycle, e.g. the clock runs its script once
+# every 10s. Other items respond to events they subscribe to, e.g. the
+# volume.sh script is only executed once an actual change in system audio
+# volume is registered. More info about the event system can be found here:
+# https://felixkratz.github.io/SketchyBar/config/events
+          #  --add item settings right \
+          #  --set settings icon=􀍟 "${background[@]}" label.drawing=off icon.padding_right=8 click_script="osascript -e 'tell application \"System Events\" to tell process \"Control Center\" to perform action \"AXPress\" of menu bar item 2 of menu bar 1'"\
+ 
+# last item is mac native control center
+
+    # "colors": {
+    #     "color0": "#211515",
+    #     "color1": "#aa6c6b",
+    #     "color2": "#aa564f",
+    #     "color3": "#8596aa",
+    #     "color4": "#a09aa9",
+    #     "color5": "#aa9097",
+    #     "color6": "#aa7f81",
+    #     "color7": "#c7c4c4",
+    #     "color8": "#584f4f",
+    #     "color9": "#aa6c6b",
+    #     "color10": "#aa564f",
+    #     "color11": "#8596aa",
+    #     "color12": "#a09aa9",
+    #     "color13": "#aa9097",
+    #     "color14": "#aa7f81",
+    #     "color15": "#c7c4c4"
+
+sketchybar --add item clock right \
+           --set clock update_freq=30 icon=􀐫 "${background[@]}" script="$PLUGIN_DIR/clock.sh" background.padding_right=-10 background.color=${COLOR_1} \
+           --add item volume right \
+           --set volume script="$PLUGIN_DIR/volume.sh" "${background[@]}"  background.color=${COLOR_2} \
+           --subscribe volume volume_change \
+           --add item battery right \
+           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" "${background[@]}" background.color=${COLOR_3}  \
+           --subscribe battery system_woke power_source_change \
+           --add item temp right \
+           --set temp icon=􀇂 script="$PLUGIN_DIR/temp.sh" "${background[@]}" update_freq=60 background.color=${COLOR_4} \
+           --add item bus_track right \
+           --set bus_track  icon=􀝉 script="$PLUGIN_DIR/bus_track.sh" "${background[@]}" update_freq=60 background.color=${COLOR_5} \
+           --add item media right \
+           --set media label.max_chars=20 \
+                       icon.padding_left=0 \
+                       scroll_texts=on \
+                       icon=􀑪             \
+                       background.drawing=off \
+                       script="$PLUGIN_DIR/media.sh" \
+           --subscribe media media_change \
+          
+    
+#  --add item pomodoro right \ --set pomodoro \ script="$PLUGIN_DIR/pomodoro.sh" \ update_freq=1 \ icon.font.size=15 \ icon.color=0xffcc6d3c \
+##### Force all scripts to run the first time (never do this in a script) #####
+
+# borders active_color=${COLOR_3} inactive_color=0xff494d64  order=above style=square width=8.0 & 
+borders active_color=${COLOR_3} inactive_color=0xff494d64  order=belove style=corner width=8.0 & 
+sketchybar --update

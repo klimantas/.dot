@@ -1,0 +1,2 @@
+TIME=$(curl -s "https://maps.trilliumtransit.com/gtfsmap-realtime/feed/dartmouth-vt-us/arrivals?stopCode=4206789&stopID=4206789" | jq -r '.data[] | select(.route_id == "76431") | .formattedTime' | head -n 1)
+sketchybar --set "bus_track" label="Sachem: $TIME"

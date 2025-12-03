@@ -1,0 +1,113 @@
+#!/usr/bin/env sh
+
+#
+# for this to work you must configure sudo such that
+# it will be able to run the command without password
+#
+# see this wiki page for information:
+#  - https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+#
+yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
+sudo yabai --load-sa
+
+yabai -m signal --add event=window_created action="toptop_bar  --trigger event_custom_windows_changed" 
+yabai -m signal --add event=window_destroyed action="toptop_bar --trigger event_custom_windows_changed"
+yabai -m signal --add event=window_focused action="toptop_bar --trigger event_custom_windows_focused"
+
+# yabai -m signal --add event=window_focused action="$HOME/.config/yabai/update_border_color.sh"
+
+# global settings
+yabai -m config                                 \
+    external_bar                 all:35:6       \
+    menubar_opacity              0.8            \
+    mouse_follows_focus          off            \
+    focus_follows_mouse          off            \
+    display_arrangement_order    default        \
+    window_origin_display        default        \
+    window_placement             second_child   \
+    window_insertion_point       focused        \
+    window_zoom_persist          on             \
+    window_shadow                on             \
+    window_animation_duration    0.0            \
+    window_animation_easing      ease_out_circ  \
+    window_opacity_duration      0.0            \
+    normal_window_opacity        1.0            \
+    active_window_opacity        1.0            \
+    window_opacity               off            \
+    insert_feedback_color        0xffd75f5f     \
+    split_ratio                  0.50           \
+    split_type                   auto           \
+    auto_balance                 off            \
+    top_padding                  6              \
+    bottom_padding               6              \
+    left_padding                 6              \
+    right_padding                6              \
+    window_gap                   6              \
+    layout                       stack          \
+    mouse_modifier               fn             \
+    mouse_action1                move           \
+    mouse_action2                resize         \
+    mouse_drop_action            swap           \
+
+# yabai -m rule --add app=".*" sub-layer=normal
+
+# rule 0.8 opacity for vs code, spotify, Messages, Discord, Mail, kitty
+yabai -m rule --add app="^Code$" opacity=1.0
+# yabai -m rule --add app="^Spotify$" opacity=0.8
+# yabai -m rule --add app="^Messages$" opacity=0.8
+# yabai -m rule --add app="^Discord$" opacity=0.8
+# yabai -m rule --add app="^Mail$" opacity=0.8
+# yabai -m rule --add app="^kitty$" opacity=0.8
+
+# disable opacity for Dota 2
+# yabai -m rule --add app="^Dota 2$" opacity=1.0
+
+# manage=off some apps
+# yabai -m rule --add app="^kitty$" manage=off
+yabai -m rule --add app="^System Settings$" manage=off
+yabai -m rule --add app="^Activity Monitor$" manage=off
+yabai -m rule --add app="^Zoom$" manage=off
+yabai -m rule --add app="^zoom.us$" manage=off
+yabai -m rule --add app="^Finder$" manage=off
+yabai -m rule --add app="^FaceTime$" manage=off
+yabai -m rule --add app="^python$" manage=off
+# Dota 2
+yabai -m rule --add app="^Dota 2$" manage=off
+
+# communcation discord messages slack always on space 4
+yabai -m rule --add app="^Slack$" space=8
+yabai -m rule --add app="^Messages$" space=8
+yabai -m rule --add app="^Discord$" space=8
+yabai -m rule --add app="^Mail$" space=8
+
+# Spotify always on space 6
+yabai -m rule --add app="^Spotify$" space=6
+
+# anything Steam always on space 5
+yabai -m rule --add app="^Steam$" space=5
+
+# Zotero Obsidian always on space 4
+yabai -m rule --add app="^Zotero$" space=4
+yabai -m rule --add app="^Obsidian$" space=4
+
+# label the spaces "misc1 code1 code2 social write play script play misc2"
+# yabai -m space 1 --label "misc1"
+# yabai -m space 2 --label "code1"
+# yabai -m space 3 --label "code2"
+# yabai -m space 4 --label "social"
+# yabai -m space 5 --label "write. 
+# yabai -m space 6 --label "play"
+# yabai -m space 7 --label "script"
+# yabai -m space 8 --label "play"
+# yabai -m space 9 --label "misc2"
+# events
+## windows crud events, trigger to sketchybars custom event windows_changed
+yabai -m signal --add event=window_created action="sketchybar  --trigger event_custom_windows_changed" 
+yabai -m signal --add event=window_destroyed action="sketchybar --trigger event_custom_windows_changed"
+# yabai -m signal --add event=window_moved action="sketchybar  --trigger event_custom_windows_changed"
+# borders active_color=0xffd79921 inactive_color=0xff494d64 width=8.0 &
+# borders active_color=${COLOR_3} inactive_color=0xff494d64  order=belove style=corner width=8.0 & 
+ 
+yabai -m signal --add event=window_focused action="~/.config/yabai/input_switch.sh"
+echo "yabai configuration loaded.."
+

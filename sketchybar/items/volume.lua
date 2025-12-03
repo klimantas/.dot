@@ -1,0 +1,109 @@
+local colors = require("colors")
+-- local icons = require("icons")
+
+local volume_slider = sbar.add("slider", 100, {
+  position = "right",
+  padding_left = 0,
+  padding_right = 0,
+  updates = true,
+--[[
+   icon = {
+     padding_right = 8,
+    -- font = {
+    --   style = "Black",
+    --   size = 12.0,
+    -- },
+   },
+--]]
+
+  background = {
+    -- color = colors.color_2,
+    corner_radius = 3,
+    height = 20,
+  },
+
+  slider = {
+    highlight_color = colors.accent,
+    width = 60,
+    background = {
+      height = 6,
+      corner_radius = 3,
+      color = colors.black
+    },
+   -- knob= {
+   --  string = "􀀁",
+   --  drawing = false,
+   --},
+  },
+
+})
+
+-- local volume_icon = sbar.add("item", {
+--   position = "right",
+--   icon = {
+--     string = icons.volume._100,
+--     width = 0,
+--     align = "left",
+--     color = colors.grey,
+--     -- font = {
+--     --   style = "Regular",
+--     --   size = 14.0,
+--     -- },
+--   },
+--   label = {
+--     width = 25,
+--     align = "left",
+--     font = {
+--       style = "Regular",
+--       size = 14.0,
+--     },
+--   },
+-- })
+
+volume_slider:subscribe("mouse.clicked", function(env)
+  sbar.exec("osascript -e 'set volume output volume " .. env["PERCENTAGE"] .. "'")
+end)
+
+volume_slider:subscribe("volume_change", function(env)
+  local volume = tonumber(env.INFO)
+  -- SwitchAudioSource -c
+  -- check output source, if "Macbook" in not in result string, then set a headphone icon 
+
+  sbar.exec("SwitchAudioSource -c", function(output)
+    local icon = ""
+    if string.find(output, "MacBook") then
+      icon = icons.volume._0
+      if volume > 60 then
+        icon = icons.volume._100
+      elseif volume > 30 then
+        icon = icons.volume._66
+      elseif volume > 10 then
+        icon = icons.volume._33
+      elseif volume > 0 then
+        icon = icons.volume._10
+      end
+    else
+      icon = icons.headphone
+    end
+    -- volume_icon:set({ label = icon })
+    volume_slider:set({ icon = { string = icon } })
+    volume_slider:set({ slider = { percentage = volume } })
+
+  end)
+
+
+end)
+
+-- local function animate_slider_width(width)
+--   sbar.animate("tanh", 30.0, function()
+--     volume_slider:set({ slider = { width = width }})
+--   end)
+-- end
+
+-- volume_icon:subscribe("mouse.clicked", function()
+--   if tonumber(volume_slider:query().slider.width) > 0 then
+--     animate_slider_width(0)
+--   else
+--     animate_slider_width(100)
+--   end
+-- end)
