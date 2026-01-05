@@ -62,7 +62,7 @@ sbar.default({
   icon = {
     font = {
       family = settings.font,
-      style = "Bold",
+      style = "Regular",
       size = 10.0
     },
     color = colors.accent,
@@ -72,6 +72,7 @@ sbar.default({
   label = {
     font = {
       family = settings.font,
+      -- family = settings.text_font,
       style = "Bold",
       size = 11.0
     },

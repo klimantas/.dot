@@ -1,4 +1,5 @@
 return {
   -- paddings = 3,
-  font = "SF Pro",
+  font = "Hack Nerd Font",
+  text_font = "SF Pro",
 }
