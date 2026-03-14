@@ -10,33 +10,13 @@ local function transparentize(color, transparency)
   return (alpha << 24) | rgb
 end
 
-
--- Equivalent to the --bar domain
-
--- sbar.bar({
---   height = 40,
---   color = colors.bar.bg,
---   border_color = colors.bar.border,
---   shadow = true,
---   sticky = true,
---   padding_right = 10,
---   padding_left = 10,
---   blur_radius=20,
---   topmost="window",
--- })
-
--- -sketchybar --bar topmost=off position=top height=38 blur_radius=30 color=0xff000000  
 sbar.bar({
+  height = 35,
+  color = 0x00000000, -- Fully transparent so only the brackets show
+  shadow = "off",
+  blur_radius = 0,
   position = "top",
-  y_offset = 32,
-  height = 38,
-  color = transparentize(colors.background, colors.transparency),
-  topmost="on",
-  -- border_color = colors.bar.border,
-  -- shadow = true,
-  -- sticky = false,
-  -- padding_right = 10,
-  -- padding_left = 10,
-  blur_radius=30,
-  notch_width=200,
+  sticky = "on",
+  padding_right = 350, -- Your notification gap
+  padding_left = 10,
 })

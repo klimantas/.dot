@@ -1,6 +1,7 @@
 local colors = require("colors")
 
-local weather = sbar.add("item", "weather", {
+local weather = sbar.add("item", {
+  name = "weather",
   position = "right",
   update_freq = 60,
   background = {
@@ -8,8 +9,8 @@ local weather = sbar.add("item", "weather", {
     corner_radius = 3,
     height = 20,
   },
-  y_offset = 0,  -- Move weather down
-  padding_right = 0,  -- Move further to the right
+  y_offset = -8,  -- Move weather down
+  padding_right = -90,  -- Move further to the right
   padding_left  = 0, 
 })
 

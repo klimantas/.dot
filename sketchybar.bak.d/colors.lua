@@ -43,8 +43,7 @@ local colors = {
   magenta = 0xffaa9097,
   grey = 0x80808080,
   lyme  = 0x8056ffbe,
-  -- bg = 0xff1f2428,
-  bg = 0xff24273a,
+  bg = 0xff1f2428,
   fg= 0xffe1e4e8,
 }
 

@@ -1,4 +1,4 @@
-local front_app = sbar.add("item", "front_app", {
+local front_app = sbar.add("item", {
   icon = {
     drawing = false
   },

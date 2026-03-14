@@ -1,6 +1,6 @@
 local colors = require("colors")
 
-local space_indicator = sbar.add("item", "spaces_simple", {
+local space_indicator = sbar.add("item", {
   position = "left",
   icon = {
     string = "1",
